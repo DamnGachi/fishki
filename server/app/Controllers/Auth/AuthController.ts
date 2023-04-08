@@ -7,9 +7,9 @@ class AuthController {
         try {
             const result = await AuthService.authUser(req.body);
             if (result) res.send(result).status(201);
-            else res.status(500).send("Неудача =(")
+            else res.status(500).send("Неудача =(");
         } catch (error) {
-            res.status(500).send("Неудача =(")
+            res.status(500).send("Неудача =(");
         }
     }
 
