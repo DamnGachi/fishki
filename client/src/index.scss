@@ -1,0 +1,26 @@
+body {
+  margin: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.object-request-popup-form-grid {
+  grid-template-areas:
+    "a b b c c"
+    "d e e f f"
+    "g h i j .";
+}
+
+.column-label-input .ant-form-item-label {
+  text-align: left;
+}
+
+.column-label-input .ant-col {
+  min-height: unset;
+}
+
+.column-label-input .ant-form-item-row {
+  flex-direction: column;
+}
