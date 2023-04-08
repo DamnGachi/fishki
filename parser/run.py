@@ -1,6 +1,9 @@
-from fastapi import FastAPI, HTTPException
-from main import get_info
-from fastapi.responses import JSONResponse
+import datetime
+
+from fastapi import FastAPI, HTTPException, Request
+from google_event import create_event
+from parser_kadastr import get_info
+from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -17,6 +20,25 @@ app.add_middleware(
     allow_headers=["Content-Type", "Set-Cookie", "Access-Control-Allow-Headers", "Access-Control-Allow-Origin",
                    "Authorization"],
 )
+
+
+@app.post('/api/google_event', response_class=HTMLResponse)
+async def create_google_event(request: Request):
+    # data = await request.json()
+
+    # start_time = datetime.datetime.strptime(
+    #     data['start_time'], '%Y-%m-%d %H:%M:%S')
+    # end_time = datetime.datetime.strptime(
+    #     data['end_time'], '%Y-%m-%d %H:%M:%S')
+    # attendees = [{'email': email} for email in data['attendees']]
+    # summary = data['summary']
+
+    event = create_event() # start_time, end_time, attendees, summary
+
+    if event:
+        return HTMLResponse(content='<h1>Event created successfully!</h1>')
+    else:
+        return HTMLResponse(content='<h1>Failed to create event.</h1>')
 
 
 @app.get('/api/parser')
