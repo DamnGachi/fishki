@@ -1,38 +1,39 @@
 import React, { useEffect } from "react";
 import { Button, Form, Input, message } from "antd";
 import { useNavigate } from "react-router-dom";
-import appState from "../store/appState";
 import { observer } from "mobx-react-lite";
 import axios from "axios";
+import appState from "../store/appState";
 
 interface IFormValues {
-  login: string;
+  email: string;
+  password: string;
 }
 
 interface IAuthResponse {
-  success: true;
-  role: string;
+  id: number;
+  role: {
+    id: number;
+  };
 }
 
 export const Auth: React.FC = observer(() => {
   const navigate = useNavigate();
 
   const onFinish = async (values: IFormValues) => {
-    // appState.setUserRole(values.role);
-
-    // if (values.id) {
-    //   appState.setUserId(values.id);
-    // }
-
-    // localStorage.setItem("userData", JSON.stringify(values));
-    // navigate("/");
-
     try {
-      const authRequest = await axios.post<IAuthResponse>("asdfasdf", {
-        login: values.login,
-      });
+      const authRequest = await axios.post<IAuthResponse>(
+        "http://127.0.0.1:8090/api/service/auth/",
+        {
+          ...values,
+        }
+      );
 
-      if (authRequest.data.success) {
+      if (authRequest.status === 200) {
+        localStorage.setItem("userId", `${authRequest.data.id}`);
+        localStorage.setItem("userRoleId", `${authRequest.data.role.id}`);
+        appState.setUserId(authRequest.data.id);
+        appState.setUserRoleId(authRequest.data.role.id);
         navigate("/");
       } else {
         message.error("Данные некорректны");
@@ -43,7 +44,7 @@ export const Auth: React.FC = observer(() => {
   };
 
   useEffect(() => {
-    if (localStorage.getItem("userData")) {
+    if (localStorage.getItem("userId")) {
       navigate("/");
     }
   }, [navigate]);
@@ -66,11 +67,18 @@ export const Auth: React.FC = observer(() => {
         autoComplete="off"
       >
         <Form.Item
-          name="login"
+          name="email"
           rules={[{ required: true, message: "Поле обязательно" }]}
-          label={"Логин"}
+          label={"Email"}
         >
           <Input />
+        </Form.Item>
+        <Form.Item
+          name="password"
+          rules={[{ required: true, message: "Поле обязательно" }]}
+          label={"Пароль"}
+        >
+          <Input.Password />
         </Form.Item>
 
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>

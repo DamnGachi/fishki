@@ -291,6 +291,7 @@ export const ObjectRequestPopup: FC<IProps> = ({ isOpen, setIsOpen }) => {
                     onClick={() => add()}
                     block
                     icon={<PlusOutlined />}
+                    style={{ width: "20%" }}
                   >
                     Добавить владельца
                   </Button>

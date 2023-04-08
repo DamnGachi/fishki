@@ -4,16 +4,17 @@ import { Auth } from "./views/Auth";
 import { useEffect } from "react";
 import { ConfigProvider } from "antd";
 import ruRU from "antd/locale/ru_RU";
+import appState from "./store/appState";
 
 function App() {
   useEffect(() => {
-    // const userData = JSON.parse(localStorage.getItem("userData") ?? "{}");
-    // if (userData && userData.role) {
-    //   appState.setUserRole(userData.role);
-    //   if (userData.id) {
-    //     appState.setUserId(userData.id);
-    //   }
-    // }
+    const userId = localStorage.getItem("userId");
+    const userRoleId = localStorage.getItem("userRoleId");
+
+    if (userId && userRoleId) {
+      appState.setUserId(+userId);
+      appState.setUserRoleId(+userRoleId);
+    }
   }, []);
 
   return (

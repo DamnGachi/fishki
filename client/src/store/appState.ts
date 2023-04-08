@@ -1,19 +1,32 @@
 import { makeAutoObservable } from "mobx";
 
 class AppState {
-  userRole: null | string = null;
-  userId: null | string = null;
+  userRoleId: null | number = null;
+  userId: null | number = null;
 
   constructor() {
     makeAutoObservable(this);
   }
 
-  setUserRole(userRole: string) {
-    this.userRole = userRole;
+  setUserRoleId(userRoleId: number) {
+    this.userRoleId = userRoleId;
   }
 
-  setUserId(userId: string) {
+  setUserId(userId: number) {
     this.userId = userId;
+  }
+
+  clearUser() {
+    this.userId = null;
+    this.userRoleId = null;
+  }
+
+  checkIsAuth() {
+    return this.userId !== null;
+  }
+
+  checkIsAdmin() {
+    return this.userRoleId === 1;
   }
 }
 

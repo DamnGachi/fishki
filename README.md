@@ -95,7 +95,7 @@ If you have run out of energy or time for your project, put a note at the top of
 ## Create base and seed
 ```
 cd /server/database
-npx seqelize db:migrate
-npx seqelize db:seed:all
+npx sequelize db:migrate
+npx sequelize db:seed:all
 ```
 

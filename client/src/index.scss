@@ -24,3 +24,42 @@ body {
 .column-label-input .ant-form-item-row {
   flex-direction: column;
 }
+
+.registry-table table {
+  width: 100%;
+}
+
+.registry-table .header {
+  font-size: 12px;
+  line-height: 15px;
+  opacity: 0.4;
+}
+
+.registry-table td {
+  padding: 0.7vw 1vw;
+  border: none;
+}
+
+.registry-table tr {
+  transition: 0.4s;
+}
+
+.registry-table tr:hover {
+  background: #e4e4e4;
+}
+
+.registry-table tr.active {
+  background: #e4e4e4;
+}
+
+.registry-table .new {
+  background: #fbdb33;
+}
+
+.registry-table .wip {
+  background: #c3c3c3;
+}
+
+.registry-table .done {
+  background: #2ad300;
+}

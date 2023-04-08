@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { Button, Divider, Layout, MenuProps } from "antd";
 import { Menu } from "antd";
 import { useNavigate } from "react-router-dom";
@@ -6,20 +6,21 @@ import Sider from "antd/es/layout/Sider";
 import { observer } from "mobx-react-lite";
 import { LogoutOutlined } from "@ant-design/icons";
 import { Content } from "antd/es/layout/layout";
-import { Objects } from "../components/Objects";
+import { Registry } from "../components/Registry";
 import { ObjectRequestPopup } from "../components/ObjectRequestPopup";
+import appState from "../store/appState";
 
-const menuItems: MenuProps["items"] = [
-  {
-    label: "Повестки",
-    key: "1",
-  },
+const adminMenuItems: MenuProps["items"] = [
   {
     label: "Реестр объектов",
+    key: "registry",
+  },
+  {
+    label: "Повестки",
     key: "2",
   },
   {
-    label: "Решения",
+    label: "Рабочие группы",
     key: "3",
   },
   {
@@ -28,17 +29,28 @@ const menuItems: MenuProps["items"] = [
   },
 ];
 
+const userMenuItems: MenuProps["items"] = [
+  {
+    label: "Реестр объектов",
+    key: "registry",
+  },
+  {
+    label: "Запросы ОН",
+    key: "2",
+  },
+];
+
 export const Home: FC = observer(() => {
-  // const navigate = useNavigate();
-  const [activeTabKey, setActiveTabKey] = useState("1");
+  const navigate = useNavigate();
+  const [activeTabKey, setActiveTabKey] = useState("registry");
   const [isObjectRequestPopupOpen, setIsObjectRequestPopupOpen] =
     useState(false);
 
-  // useEffect(() => {
-  //   if (!localStorage.getItem("userData")) {
-  //     navigate("/auth");
-  //   }
-  // }, [navigate]);
+  useEffect(() => {
+    if (!localStorage.getItem("userId")) {
+      navigate("/auth/");
+    }
+  }, [navigate]);
 
   return (
     <Layout style={{ height: "100vh" }}>
@@ -52,9 +64,17 @@ export const Home: FC = observer(() => {
             gap: 30,
           }}
         >
-          <h4>Пользователь</h4>
+          <h4>{appState.checkIsAdmin() ? "Администратор" : "Пользователь"}</h4>
 
-          <Button danger>
+          <Button
+            danger
+            onClick={() => {
+              localStorage.removeItem("userId");
+              localStorage.removeItem("userRoleId");
+              appState.clearUser();
+              navigate("/auth/");
+            }}
+          >
             <LogoutOutlined />
           </Button>
         </div>
@@ -63,30 +83,34 @@ export const Home: FC = observer(() => {
 
         <Menu
           mode="inline"
-          items={menuItems}
-          defaultSelectedKeys={["1"]}
+          items={appState.checkIsAdmin() ? adminMenuItems : userMenuItems}
           onClick={(e) => {
             setActiveTabKey(e.key);
           }}
+          defaultSelectedKeys={["registry"]}
         />
 
         <Divider />
 
-        <Button
-          type="primary"
-          size="large"
-          style={{ width: "100%" }}
-          onClick={() => setIsObjectRequestPopupOpen(true)}
-        >
-          Сформировать заявку
-        </Button>
+        {!appState.checkIsAdmin() && (
+          <>
+            <Button
+              type="primary"
+              size="large"
+              style={{ width: "100%" }}
+              onClick={() => setIsObjectRequestPopupOpen(true)}
+            >
+              Сформировать заявку
+            </Button>
 
-        <ObjectRequestPopup
-          isOpen={isObjectRequestPopupOpen}
-          setIsOpen={setIsObjectRequestPopupOpen}
-        />
+            <ObjectRequestPopup
+              isOpen={isObjectRequestPopupOpen}
+              setIsOpen={setIsObjectRequestPopupOpen}
+            />
+          </>
+        )}
       </Sider>
-      <Content>{activeTabKey === "2" && <Objects />}</Content>
+      <Content>{activeTabKey === "registry" && <Registry />}</Content>
     </Layout>
   );
 });
