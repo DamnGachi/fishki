@@ -2,6 +2,11 @@
 
 # dependencies
 /client/node_modules
+/server/node_modules
+/server/docker/mysql
+.idea
+/server/dist
+
 /.pnp
 .pnp.js
 

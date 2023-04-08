@@ -1,0 +1,52 @@
+version: "3.8"
+
+networks:
+  app-tier:
+    driver: bridge
+
+services:
+  nginx:
+    container_name: nginx-service
+    build:
+      context: .
+      dockerfile: docker/nginx/Dockerfile
+    links:
+      - mysql
+    networks:
+      - app-tier
+    ports:
+      - "127.0.0.1:80:8091"
+    environment:
+      - NGINX_PORT=80
+    volumes:
+      - ./:/var/www/
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-service
+    restart: always
+    networks:
+      - app-tier
+    ports:
+      - "127.0.0.1:3306:3306"
+    environment:
+      MYSQL_DATABASE: service
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+      MYSQL_USER: haha
+      MYSQL_PASSWORD: root
+    volumes:
+      - ./docker/mysql:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin:5.1
+    container_name: phpmyadmin-service
+    restart: always
+    networks:
+      - app-tier
+    ports:
+      - "127.0.0.1:90:80"
+    environment:
+      PMA_HOST: mysql
+
+
+
+
