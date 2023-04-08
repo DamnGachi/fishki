@@ -9,7 +9,7 @@ services:
     container_name: nginx-service
     build:
       context: .
-      dockerfile: docker/nginx/Dockerfile
+      dockerfile: server/docker/nginx/Dockerfile
     links:
       - mysql
     networks:
@@ -34,7 +34,7 @@ services:
       MYSQL_USER: haha
       MYSQL_PASSWORD: root
     volumes:
-      - ./docker/mysql:/var/lib/mysql
+      - ./server/docker/mysql:/var/lib/mysql
 
   phpmyadmin:
     image: phpmyadmin:5.1
@@ -46,7 +46,10 @@ services:
       - "127.0.0.1:90:80"
     environment:
       PMA_HOST: mysql
-
-
+      
+  parser:
+    build:
+      context: ./parser
+      dockerfile: Dockerfile
 
 

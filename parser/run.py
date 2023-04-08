@@ -19,11 +19,10 @@ app.add_middleware(
 )
 
 
-@app.get('/')
+@app.get('/api/parser')
 async def get_data_kadastr(kadastr_number: str):
     try:
         return get_info(kadastr_number)
-
 
     except KeyError:
         raise HTTPException(

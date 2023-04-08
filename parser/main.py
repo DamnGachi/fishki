@@ -46,10 +46,6 @@ def get_info(kadastr_number: str):
     with open("dick.json", 'w', encoding='utf-8') as fout:
         json_dumps_str = json.dumps(dick, ensure_ascii=False)
         print(json_dumps_str, file=fout)
-        # return json_dumps_str
 
     with open("dick.json", 'r', encoding='utf-8') as fout:
         return fout.read()
-
-
-print(get_info(kadastr_number="67:18:0054501:44"))
