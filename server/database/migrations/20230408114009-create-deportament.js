@@ -19,16 +19,16 @@ module.exports = {
         allowNull: false
       },
       createdAt: {
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.DATE
       },
       updatedAt: {
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.DATE
       }
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('deportation');
+    await queryInterface.dropTable('role');
   }
 };

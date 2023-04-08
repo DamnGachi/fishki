@@ -20,7 +20,9 @@ module.exports = (sequelize, DataTypes) => {
     jobTitle: DataTypes.STRING,
     email: DataTypes.STRING,
     password: DataTypes.STRING,
-    phone: DataTypes.NUMBER,
+    roleId: DataTypes.BIGINT,
+    phone: DataTypes.INT,
+    isActive: DataTypes.BOOL,
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE,
     deletedAt: DataTypes.DATE
@@ -28,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'User',
     timestamps: true,
-    schema: 'user',
+    tableName: 'users',
   });
   return User;
 };

@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.createTable('deportation_area', {
+    await queryInterface.createTable('user_area', {
       deportation_id: {
         type: Sequelize.BIGINT,
       },
@@ -20,6 +20,6 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
-    await queryInterface.dropTable('deportation_area');
+    await queryInterface.dropTable('user_area');
   }
 };

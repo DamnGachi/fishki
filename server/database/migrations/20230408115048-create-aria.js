@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Aria', {
+    await queryInterface.createTable('area', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -14,9 +14,13 @@ module.exports = {
         allowNull: false,
         unique:true
       },
+      countyId: {
+        type: Sequelize.BIGINT,
+        allowNull: false,
+      }
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Aria');
+    await queryInterface.dropTable('area');
   }
 };
