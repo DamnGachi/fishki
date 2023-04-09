@@ -9,10 +9,6 @@ class BidController {
 
     }
 
-    update(req :Request, res: Response) {
-
-    }
-
     updateStatus(req :Request, res: Response) {
 
     }
