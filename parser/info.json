@@ -1,0 +1,14 @@
+{
+    "title": "My Event",
+    "description": "This is a test event",
+    "conference_data": {
+        "conferenceSolution": "hangoutsMeet",
+        "conferenceName": "My Conference",
+        "conferenceEntryPoints": [
+            {
+                "entryPointType": "video",
+                "uri": "https://meet.google.com/abc-def-ghi"
+            }
+        ]
+    }
+}

@@ -44,11 +44,11 @@ def get_info(kadastr_number: str):
 
     dick = dict(zip(result2, result1))
     with open("dick.json", 'w', encoding='utf-8') as fout:
-        json_dumps_str = json.dumps(dick, ensure_ascii=False)
+        json_dumps_str = json.dumps(dick, indent=4, ensure_ascii=False)
         print(json_dumps_str, file=fout)
 
     with open("dick.json", 'r', encoding='utf-8') as fout:
         return fout.read()
 
 
-get_info(kadastr_number="67-18-54501-44")
+get_info(kadastr_number="77:01:0001014:1868")
