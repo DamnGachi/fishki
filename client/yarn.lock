@@ -1638,6 +1638,13 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@pbe/react-yandex-maps@^1.2.3":
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/@pbe/react-yandex-maps/-/react-yandex-maps-1.2.3.tgz#7d9a39870e88c1e5aa80e9b7fff1b406569e2da8"
+  integrity sha512-haLhEym1eGNj67N44M2aKQHGKKufs+LzK4/n5XK4jBTr+LzO8zZSnsBbN0UsxzEFcRb8wh24qqDvOyxFuR1HGA==
+  dependencies:
+    "@types/yandex-maps" "2.1.29"
+
 "@pmmmwh/react-refresh-webpack-plugin@^0.5.3":
   version "0.5.10"
   resolved "https://registry.yarnpkg.com/@pmmmwh/react-refresh-webpack-plugin/-/react-refresh-webpack-plugin-0.5.10.tgz#2eba163b8e7dbabb4ce3609ab5e32ab63dda3ef8"
@@ -2259,6 +2266,11 @@
   integrity sha512-zdQDHKUgcX/zBc4GrwsE/7dVdAD8JR4EuiAXiiUhhfyIJXXb2+PrGshFyeXWQPMmmZ2XxgaqclgpIC7eTXc1mg==
   dependencies:
     "@types/node" "*"
+
+"@types/yandex-maps@2.1.29":
+  version "2.1.29"
+  resolved "https://registry.yarnpkg.com/@types/yandex-maps/-/yandex-maps-2.1.29.tgz#88dba8d99a4a05c6bf6d7fbc36c78e891ef30d38"
+  integrity sha512-nuibRWj3RU/9KXlCzTrRtDE+n6V9l7NbT9JakicqZ5OXIdwyb6blvV2Uwn6lB58WYm3DSUDP2I2AWlnWMc8z2w==
 
 "@types/yargs-parser@*":
   version "21.0.0"
@@ -3514,6 +3526,14 @@ cosmiconfig@^7.0.0:
     parse-json "^5.0.0"
     path-type "^4.0.0"
     yaml "^1.10.0"
+
+create-react-context@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/create-react-context/-/create-react-context-0.3.0.tgz#546dede9dc422def0d3fc2fe03afe0bc0f4f7d8c"
+  integrity sha512-dNldIoSuNSvlTJ7slIKC/ZFGKexBMBrrcc+TTe1NdmROnaASuLPvqpwj9v4XS4uXZ8+YPu0sNmShX2rXI5LNsw==
+  dependencies:
+    gud "^1.0.0"
+    warning "^4.0.3"
 
 cross-spawn@^7.0.2, cross-spawn@^7.0.3:
   version "7.0.3"
@@ -4974,6 +4994,11 @@ grapheme-splitter@^1.0.4:
   resolved "https://registry.yarnpkg.com/grapheme-splitter/-/grapheme-splitter-1.0.4.tgz#9cf3a665c6247479896834af35cf1dbb4400767e"
   integrity sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==
 
+gud@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/gud/-/gud-1.0.0.tgz#a489581b17e6a70beca9abe3ae57de7a499852c0"
+  integrity sha512-zGEOVKFM5sVPPrYs7J5/hYEw2Pof8KCyOwyhG8sAF26mCAeUFAcYPu1mwB7hhpIP29zOIBaDqwuHdLp0jvZXjw==
+
 gzip-size@^6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/gzip-size/-/gzip-size-6.0.0.tgz#065367fd50c239c0671cbcbad5be3e2eeb10e462"
@@ -6401,7 +6426,7 @@ lodash@^4.17.15, lodash@^4.17.20, lodash@^4.17.21, lodash@^4.7.0:
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
 
-loose-envify@^1.1.0, loose-envify@^1.4.0:
+loose-envify@^1.0.0, loose-envify@^1.1.0, loose-envify@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/loose-envify/-/loose-envify-1.4.0.tgz#71ee51fa7be4caec1a63839f7e682d8132d30caf"
   integrity sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==
@@ -7641,7 +7666,7 @@ prompts@^2.0.1, prompts@^2.4.2:
     kleur "^3.0.3"
     sisteransi "^1.0.5"
 
-prop-types@^15.8.1:
+prop-types@^15.7.2, prop-types@^15.8.1:
   version "15.8.1"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.8.1.tgz#67d87bf1a694f48435cf332c24af10214a3140b5"
   integrity sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==
@@ -8144,6 +8169,11 @@ react-dev-utils@^12.0.1:
     strip-ansi "^6.0.1"
     text-table "^0.2.0"
 
+react-display-name@^0.2.5:
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/react-display-name/-/react-display-name-0.2.5.tgz#304c7cbfb59ee40389d436e1a822c17fe27936c6"
+  integrity sha512-I+vcaK9t4+kypiSgaiVWAipqHRXYmZIuAiS8vzFvXHHXVigg/sMKwlRgLy6LH2i3rmP+0Vzfl5lFsFRwF1r3pg==
+
 react-dom@^18.2.0:
   version "18.2.0"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-18.2.0.tgz#22aaf38708db2674ed9ada224ca4aa708d821e3d"
@@ -8246,6 +8276,15 @@ react-scripts@5.0.1:
     workbox-webpack-plugin "^6.4.1"
   optionalDependencies:
     fsevents "^2.3.2"
+
+react-yandex-maps@^4.6.0:
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/react-yandex-maps/-/react-yandex-maps-4.6.0.tgz#87808ee71900a0c46dc0792bd65884ce50f432d4"
+  integrity sha512-X4SC+SL4aByIaBOpis0FQYalqdXyvlj0D/LSznrYGUPadVsIuvHXP8GrFoN00oCOiiRwSQarOcVfN7V0XQxesA==
+  dependencies:
+    create-react-context "^0.3.0"
+    prop-types "^15.7.2"
+    react-display-name "^0.2.5"
 
 react@^18.2.0:
   version "18.2.0"
@@ -9536,6 +9575,13 @@ walker@^1.0.7:
   integrity sha512-ts/8E8l5b7kY0vlWLewOkDXMmPdLcVV4GmOQLyxuSswIJsweeFZtAsMF7k1Nszz+TYBQrlYRmzOnr398y1JemQ==
   dependencies:
     makeerror "1.0.12"
+
+warning@^4.0.3:
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/warning/-/warning-4.0.3.tgz#16e9e077eb8a86d6af7d64aa1e05fd85b4678ca3"
+  integrity sha512-rpJyN222KWIvHJ/F53XSZv0Zl/accqHR8et1kpaMTD/fLCRxtV8iX8czMzY7sVZupTI3zcUTg8eycS2kNF9l6w==
+  dependencies:
+    loose-envify "^1.0.0"
 
 watchpack@^2.4.0:
   version "2.4.0"

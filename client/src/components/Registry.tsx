@@ -1,7 +1,16 @@
-import { ArrowRightOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Table } from "antd";
+import { Button, Form, Input, message } from "antd";
 import classNames from "classnames";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
+import { RegistryDetailModal } from "./RegistryDetailModal";
+import axios from "axios";
+
+export const formatDate = (dateString: string) => {
+  const dateObj = new Date(dateString);
+
+  return `${dateObj.getDate()}.${
+    dateObj.getMonth() + 1
+  }.${dateObj.getFullYear()}`;
+};
 
 const tableItems = [
   {
@@ -11,17 +20,12 @@ const tableItems = [
     type: "Помещение",
     square: "134,6",
     registrationDate: "12.03.2014",
-    region: 'Москва',
+    region: "Москва",
+    index: "109012",
+    floor: "0 (Цокольный этаж)",
     status: "Новый",
     updatedAt: "Обновлена 24 февраля, 13:45",
-    owners: [
-      {
-        fio: "Бондарь Евгений Максимович",
-        rule: "218",
-        registration_number: "№ 34-11-237/2008-411.3",
-        registration_date: "20.11.2001",
-      },
-    ],
+    owners: [],
   },
   {
     key: 2,
@@ -29,8 +33,10 @@ const tableItems = [
     address: "ул. Конная, д. 5/3, 1",
     type: "Помещение",
     square: "134,6",
+    floor: "0 (Цокольный этаж)",
     registrationDate: "12.03.2014",
-    region: 'Москва',
+    region: "Москва",
+    index: "109012",
     status: "В работе",
     updatedAt: "Обновлена 24 февраля, 13:45",
     owners: [
@@ -49,8 +55,10 @@ const tableItems = [
     type: "Помещение",
     square: "134,6",
     registrationDate: "12.03.2014",
-    region: 'Москва',
+    region: "Москва",
+    floor: "0 (Цокольный этаж)",
     status: "Работа завершена",
+    index: "109012",
     updatedAt: "Обновлена 24 февраля, 13:45",
     owners: [
       {
@@ -69,8 +77,10 @@ const tableItems = [
     square: "134,6",
     registrationDate: "12.03.2014",
     status: "Новый",
-    region: 'Москва',
+    region: "Москва",
     updatedAt: "Обновлена 24 февраля, 13:45",
+    floor: "0 (Цокольный этаж)",
+    index: "109012",
     owners: [
       {
         fio: "Бондарь Евгений Максимович",
@@ -84,9 +94,11 @@ const tableItems = [
     key: 5,
     number: "77:01:0001014:1870",
     address: "ул. Конная, д. 5/3, 1",
+    floor: "0 (Цокольный этаж)",
     type: "Помещение",
     square: "134,6",
-    region: 'Москва',
+    region: "Москва",
+    index: "109012",
     registrationDate: "12.03.2014",
     status: "Новый",
     updatedAt: "Обновлена 24 февраля, 13:45",
@@ -105,6 +117,25 @@ export const Registry: FC = () => {
   const [filtersForm] = Form.useForm();
   const [activeDetailItem, setActiveDetailItem] = useState<null | number>(null);
   const [activeItemData, setActiveItemData] = useState<null | any>(null);
+  const [registryItems, setRegistryItems] = useState<any[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const contentRequest = await axios.get(
+          "http://127.0.0.1:8090/api/service/registry/"
+        );
+
+        if (contentRequest.status === 200) {
+          setRegistryItems(contentRequest.data);
+        } else {
+          message.error("Ошибка при загрузке элементов");
+        }
+      } catch {
+        message.error("Ошибка при загрузке элементов");
+      }
+    })();
+  }, []);
 
   return (
     <div style={{ display: "flex" }}>
@@ -118,7 +149,16 @@ export const Registry: FC = () => {
           overflow: "auto",
         }}
       >
-        <div style={{ position: "fixed" }}>
+        <div
+          style={{
+            position: "fixed",
+            width:
+              activeDetailItem !== null
+                ? "calc(50vw - 210px)"
+                : "calc(100vw - 360px)",
+            transition: "0.4s",
+          }}
+        >
           <h5>Обновлено: 13 февраля</h5>
           <h2>Реестр объектов</h2>
           <Form form={filtersForm} style={{ display: "flex", gap: 10 }}>
@@ -151,7 +191,7 @@ export const Registry: FC = () => {
               width: "100%",
             }}
           >
-            <h4>Объектов найдено: {tableItems.length}</h4>
+            <h4>Объектов найдено: {registryItems.length}</h4>
             <Button disabled>Выгрузить отчет</Button>
           </div>
         </div>
@@ -166,106 +206,47 @@ export const Registry: FC = () => {
                 <td>На учёте с</td>
                 <td>Статус</td>
               </tr>
-              {tableItems.map((item) => (
+              {registryItems.map((item) => (
                 <tr
-                  key={item.key}
+                  key={item.id}
                   onClick={() => {
                     if (activeDetailItem !== null) {
                       setActiveDetailItem(null);
                       setActiveItemData(null);
                     } else {
-                      setActiveDetailItem(item.key);
+                      setActiveDetailItem(item.id);
                       setActiveItemData(item);
                     }
                   }}
                   className={classNames(
-                    item.key === activeDetailItem && "active"
+                    item.id === activeDetailItem && "active"
                   )}
                 >
-                  <td>{item.number}</td>
+                  <td>{item.cadastralNumber}</td>
                   <td>{item.address}</td>
                   <td>{item.type}</td>
-                  <td>{item.square}</td>
-                  <td>{item.registrationDate}</td>
+                  <td>{item.space}</td>
+                  <td>{formatDate(item.createdAt)}</td>
                   <td
                     className={classNames(
-                      item.status === "Новый" && "new",
-                      item.status === "В работе" && "wip",
-                      item.status === "Работа завершена" && "done"
+                      item.status.id === 1 && "new",
+                      item.status.id === 2 && "wip",
+                      item.status.id === 3 && "done"
                     )}
+                    style={{ textAlign: "center" }}
                   >
-                    {item.status}
+                    {item.status.title}
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <div
-            style={{
-              position: "fixed",
-              height: "100%",
-              top: "0",
-              right: 0,
-              width: "calc(50vw - 150px)",
-              transform: `translateX(${
-                activeDetailItem !== null ? "0" : "calc(50vw - 150px)"
-              })`,
-              transition: ".4s",
-              padding: 30,
-            }}
-          >
-            {activeItemData && (
-              <div>
-                <Button
-                  icon={<ArrowRightOutlined />}
-                  onClick={() => {
-                    setActiveDetailItem(null);
-                    setActiveItemData(null);
-                  }}
-                >
-                  Скрыть страницу объекта
-                </Button>
-                <p>{activeItemData.updatedAt}</p>
-                <h3>Анкета объекта</h3>
-                <div
-                  style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }}
-                >
-                  <div>
-                    <p
-                      style={{ opacity: 0.4, fontSize: 12, lineHeight: "15px" }}
-                    >
-                      Тип
-                    </p>
-                    <p>{activeItemData.type}</p>
-                  </div>
-                  <div>
-                    <p
-                      style={{ opacity: 0.4, fontSize: 12, lineHeight: "15px" }}
-                    >
-                      Регион
-                    </p>
-                    <p>{activeItemData.region}</p>
-                  </div>
-                  <div>
-                    <p
-                      style={{ opacity: 0.4, fontSize: 12, lineHeight: "15px" }}
-                    >
-                      Кадастровый номер
-                    </p>
-                    <p>{activeItemData.number}</p>
-                  </div>
-                  <div>
-                    <p
-                      style={{ opacity: 0.4, fontSize: 12, lineHeight: "15px" }}
-                    >
-                      Кадастровый район
-                    </p>
-                    <p>{activeItemData.address}</p>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
+          <RegistryDetailModal
+            activeDetailItem={activeDetailItem}
+            activeItemData={activeItemData}
+            setActiveDetailItem={setActiveDetailItem}
+            setActiveItemData={setActiveItemData}
+          />
         </div>
       </div>
     </div>
