@@ -10,7 +10,7 @@ import immovable from "../Models/Immovable";
 class ImmovableService {
     async getAll() {
         try {
-            return await Immovable.findAll({include: [{model: Owner, include: ['fs'],}, 'status'],});
+            return await Immovable.findAll({include: [{model: Owner, include: ['fs'],}, 'status', 'history'],});
         } catch (error) {
             throw error;
         }
