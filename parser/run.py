@@ -1,4 +1,5 @@
 
+import json
 import uuid
 from fastapi import FastAPI, HTTPException, Request
 from parser_kadastr import get_info
@@ -74,7 +75,10 @@ async def create_event(conference_data: dict | None = None):
 @app.get('/api/parser/{kadastr_number}')
 async def get_data_kadastr(kadastr_number: str):
     try:
-        return get_info(kadastr_number)
+        get_info(kadastr_number)
+        with open("dick.json", "r", encoding='utf-8') as json_file:
+            data = json.load(json_file)
+        return data
 
     except KeyError:
         raise HTTPException(
