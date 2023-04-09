@@ -18,12 +18,12 @@ app.use(cors({
     // exposedHeaders: 'Content-Range,X-Content-Range',
     allowedHeaders: '*',
     credentials: true
-}))
+}));
+app.use(express.json());
 app.use(json());
 app.use(raw());
 app.use(text());
 app.use(urlencoded({ extended: false }));
-
 
 app.use(router);
 
