@@ -10,16 +10,12 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 app = FastAPI()
 
-origins = [
-    "http://localhost:3000",
-]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["GET", "POST", "OPTIONS", "DELETE", "PATCH", "PUT"],
-    allow_headers=["Content-Type", "Set-Cookie", "Access-Control-Allow-Headers", "Access-Control-Allow-Origin",
-                   "Authorization"],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 SCOPES = ['https://www.googleapis.com/auth/calendar']
@@ -31,43 +27,45 @@ calendar_service = build('calendar', 'v3', credentials=credentials)
 
 
 @app.post("/create_event/")
-# title: str, description: str, start_time: str | None = None, end_time: str | None = None,
 async def create_event(conference_data: dict | None = None):
     event = {
         'summary': conference_data['title'],
         'description': conference_data['description'],
         'start': {
-            'dateTime': '2023-8-28T09:00:00-07:00',
+            'dateTime': conference_data['start_time'],
             'timeZone': 'America/Los_Angeles',
         },
         'end': {
-            'dateTime': '2023-08-28T17:00:00-07:00',
+            'dateTime': conference_data['end_time'],
             'timeZone': 'America/Los_Angeles',
         },
-    }
-
-    if conference_data:
-        conference = {
+        'conferenceDataVersion': 1,
+        'conferenceData': {
             'createRequest': {
                 'conferenceSolutionKey': {
                     'type': 'hangoutsMeet',
                 },
                 'requestId': str(uuid.uuid4()),
             },
-        }
-        if 'conferenceSolution' in conference_data:
-            conference['createRequest']['conferenceSolutionKey']['type'] = conference_data['conferenceSolution']
-        if 'conferenceName' in conference_data:
-            conference['createRequest']['conferenceSolutionKey']['name'] = conference_data['conferenceName']
-        if 'conferenceEntryPoints' in conference_data:
-            conference['entryPoints'] = conference_data['conferenceEntryPoints']
+        },
+    }
 
-        event['conferenceData'] = conference
+    if 'conferenceSolution' in conference_data:
+        event['conferenceData']['createRequest']['conferenceSolutionKey']['type'] = conference_data['conferenceSolution']
+    if 'conferenceName' in conference_data:
+        event['conferenceData']['createRequest']['conferenceSolutionKey']['name'] = conference_data['conferenceName']
+    if 'conferenceEntryPoints' in conference_data:
+        event['conferenceData']['entryPoints'] = conference_data['conferenceEntryPoints']
 
     try:
         event = calendar_service.events().insert(
             calendarId='2d4447f0d0ab2b8d117fd7a9836eb8ab8d6dc27b46683720833383e81ec8c38b@group.calendar.google.com', body=event).execute()
-        return {"message": "Event created: %s" % (event.get('htmlLink'))}
+
+        # Create Google Meet video conferencing link
+        conference_data = event.get('conferenceData', {})
+        conference_solution = conference_data.get(
+            'entryPoints', [{}])[0].get('uri')
+        return {"message": "Event created: %s \n Video conference link: %s" % (event.get('htmlLink'), conference_solution)}
     except HttpError as error:
         return {"message": "An error occurred: %s" % error}
 
