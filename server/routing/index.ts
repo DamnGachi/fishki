@@ -11,6 +11,8 @@ router.get('/api/service/auth/sync',    AuthController.sync);
 router.post('/api/service/auth/',       AuthController.login);
 
 router.get('/api/service/registry',     RegistryController.getAll);
+router.put('/api/service/registry/create',     RegistryController.create);
+router.put('/api/service//registry/:id/update',     RegistryController.update);
 
 
 

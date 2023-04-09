@@ -10,6 +10,24 @@ class RegistryController {
             res.send("error").status(500);
         }
     }
+
+    async create (req: Request, res: Response) {
+        try {
+
+        } catch (error) {
+
+        }
+    }
+
+    async update (req: Request, res: Response)  {
+        try {
+
+        } catch (error) {
+
+        }
+    }
+
+
 }
 
 export default new RegistryController();
