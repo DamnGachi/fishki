@@ -46,7 +46,7 @@ class ImmovableService {
             await this.logging(immovableId,data.userId, ActionEnums.CREATED_CARD);
 
             if (immovableId && Owners.owners.length) {
-                const addImmovableId = owner => {
+                const addImmovableId = (owner:any) => {
                   owner.immovableId = immovableId;
                   return owner;
                 };
@@ -73,7 +73,7 @@ class ImmovableService {
                 return item;
             });
             if (newOwners.length) {
-                const addImmovableId = owner => {
+                const addImmovableId = (owner:any) => {
                     owner.immovableId = index;
                     return owner;
                 };
