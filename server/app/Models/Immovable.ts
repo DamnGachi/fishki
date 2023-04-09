@@ -1,8 +1,8 @@
-import { DataTypes} from "sequelize";
+import { DataTypes } from "sequelize";
 import Owners from "./Owner";
 import ImmovableHistory from "./ImmovableHistory";
 import ImmovableStatus from "./ImmovableStatus";
-const {sequelize} = require('../../database/database');
+const { sequelize } = require('../../database/database');
 
 const Immovable = sequelize.define('Immovable', {
     slug: {
@@ -48,7 +48,7 @@ const Immovable = sequelize.define('Immovable', {
         type: DataTypes.FLOAT,
     },
     lat: {
-        type : DataTypes.FLOAT,
+        type: DataTypes.FLOAT,
     },
     long: {
         type: DataTypes.FLOAT,
@@ -71,7 +71,7 @@ const Immovable = sequelize.define('Immovable', {
 });
 
 Immovable.hasMany(Owners);
-Immovable.hasMany(ImmovableHistory,     {foreignKey: 'immovableId', as: 'history' });
-Immovable.belongsTo(ImmovableStatus,    {foreignKey: 'statusId',    as: 'status'})
+Immovable.hasMany(ImmovableHistory, { foreignKey: 'immovableId', as: 'history' });
+Immovable.belongsTo(ImmovableStatus, { foreignKey: 'statusId', as: 'status' })
 
 export default Immovable;
