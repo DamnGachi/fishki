@@ -10,11 +10,11 @@ def create_event_handler(title, location, description, start_date, end_date):
         "description": description,
         "start": {
             "dateTime": start_date,
-            "timeZone": "America/Los_Angeles",
+            "timeZone": "Europe/Moscow",
         },
         "end": {
             "dateTime": end_date,
-            "timeZone": "America/Los_Angeles",
+            "timeZone": "Europe/Moscow",
         },
         "conferenceData": {
             "createRequest": {
