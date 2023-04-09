@@ -25,7 +25,6 @@ const Owner = sequelize.define('Owner', {
 });
 
 Owner.belongsTo(Fs, {foreignKey: 'fsId', targetKey: 'id', as: 'fs'});
-// Owner.belongsTo(Immovable);
 
 
 export default Owner;

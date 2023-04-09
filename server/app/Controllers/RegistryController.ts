@@ -11,6 +11,15 @@ class RegistryController {
         }
     }
 
+    async resource (req: Request, res: Response)  {
+        try {
+            const result = await ImmovableService.resource();
+            res.send(result).status(200);
+        } catch(error) {
+            res.send(error).status(500);
+        }
+    }
+
     async create (req: Request, res: Response) {
         try {
             const result = await ImmovableService.create(req.body);
@@ -22,11 +31,15 @@ class RegistryController {
 
     async update (req: Request, res: Response)  {
         try {
-            const result = await ImmovableService.update(req.body);
+            const result = await ImmovableService.update(req.body, Number(req.params.id));
             res.send(result).status(200);
         } catch (error) {
             res.send({error}).status(500);
         }
+    }
+
+    async source(req: Request, res: Response) {
+
     }
 
 

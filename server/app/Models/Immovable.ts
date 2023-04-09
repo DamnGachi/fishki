@@ -1,5 +1,6 @@
 import { DataTypes} from "sequelize";
 import Owners from "./Owner";
+import ImmovableHistory from "./ImmovableHistory";
 import ImmovableStatus from "./ImmovableStatus";
 const {sequelize} = require('../../database/database');
 
@@ -70,6 +71,7 @@ const Immovable = sequelize.define('Immovable', {
 });
 
 Immovable.hasMany(Owners);
-Immovable.belongsTo(ImmovableStatus, {foreignKey: 'statusId', as: 'status'})
+Immovable.hasMany(ImmovableHistory,     {foreignKey: 'immovableId', as: 'history' });
+Immovable.belongsTo(ImmovableStatus,    {foreignKey: 'statusId',    as: 'status'})
 
 export default Immovable;

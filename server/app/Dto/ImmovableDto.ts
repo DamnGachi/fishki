@@ -1,5 +1,6 @@
 import {randomUUID} from "crypto";
 import {DATE} from "sequelize";
+import owner from "../Models/Owner";
 
 export class ImmovableDto {
     id              : number | null;
@@ -18,7 +19,7 @@ export class ImmovableDto {
     type            : string | null;
     space           : number | null;
     lat             : number | null;
-    log             : number | null;
+    long             : number | null;
     statusId        : number | null;
 
     constructor(data: any) {
@@ -39,6 +40,6 @@ export class ImmovableDto {
         this.space = data?.space || 'отсутствует';
         this.statusId = data?.statusId || 1;
         this.lat = data?.lat;
-        this.log = data?.log;
+        this.long = data?.long;
     }
 }
