@@ -1,5 +1,8 @@
 
+from datetime import timedelta
+import datetime
 import json
+from typing import Dict, List
 import uuid
 from fastapi import FastAPI, HTTPException, Request
 from parser_kadastr import get_info
@@ -22,55 +25,69 @@ SCOPES = ['https://www.googleapis.com/auth/calendar']
 SERVICE_ACCOUNT_FILE = 'credentials.json'
 credentials = service_account.Credentials.from_service_account_file(
     SERVICE_ACCOUNT_FILE, scopes=SCOPES)
-
-calendar_service = build('calendar', 'v3', credentials=credentials)
+calendar_service = build("calendar", "v3", credentials=credentials)
 
 
 @app.post("/create_event/")
-async def create_event(conference_data: dict | None = None):
-    event = {
-        'summary': conference_data['title'],
-        'description': conference_data['description'],
-        'start': {
-            'dateTime': conference_data['start_time'],
-            'timeZone': 'America/Los_Angeles',
-        },
-        'end': {
-            'dateTime': conference_data['end_time'],
-            'timeZone': 'America/Los_Angeles',
-        },
-        'conferenceDataVersion': 1,
-        'conferenceData': {
-            'createRequest': {
-                'conferenceSolutionKey': {
-                    'type': 'hangoutsMeet',
-                },
-                'requestId': str(uuid.uuid4()),
-            },
-        },
-    }
+#  start_date: str, end_date: str,
+async def create_event(title: str, description: str, location: str,):
 
-    if 'conferenceSolution' in conference_data:
-        event['conferenceData']['createRequest']['conferenceSolutionKey']['type'] = conference_data['conferenceSolution']
-    if 'conferenceName' in conference_data:
-        event['conferenceData']['createRequest']['conferenceSolutionKey']['name'] = conference_data['conferenceName']
-    if 'conferenceEntryPoints' in conference_data:
-        event['conferenceData']['entryPoints'] = conference_data['conferenceEntryPoints']
+    event = {
+        "summary": title,
+        "location": location,
+        "description": description,
+        "start": {
+            "dateTime": "2023-08-28T09:00:00-07:00",
+            "timeZone": "America/Los_Angeles",
+        },
+        "end": {
+            "dateTime": "2023-08-28T22:00:00-07:00",
+            "timeZone": "America/Los_Angeles",
+        },
+        # "attendees": [
+        #     {
+        #         "email": "john@example.com"
+        #     },
+        #     {
+        #         "email": "jane@example.com"
+        #     }
+        # ],
+        "conferenceData": {
+            "createRequest": {
+                "requestId": f"{uuid.uuid4().hex}",
+                "conferenceSolution": {
+                    "key": {
+                        "type": "hangoutsMeet"
+                    }
+                },
+                "conferenceName": "Test Meeting",
+                "conferenceEntryPoints": [
+                    {
+                        "entryPointType": "video",
+                        "uri": "https://meet.google.com/abc-defg-hij"
+                    }
+                ]
+
+            }
+        },
+        "reminders": {"useDefault": True}
+    }
 
     try:
         event = calendar_service.events().insert(
-            calendarId='2d4447f0d0ab2b8d117fd7a9836eb8ab8d6dc27b46683720833383e81ec8c38b@group.calendar.google.com', body=event).execute()
+            calendarId='9cb44884bae1adea95ac4d63744692c86fe1eb778670dbc924ec4edeaa89770f@group.calendar.google.com', body=event, conferenceDataVersion=1).execute()
 
-        # Create Google Meet video conferencing link
+        # создание ссылки на видеоконференцию в Google Meet
         conference_data = event.get('conferenceData', {})
+        print(conference_data)
         conference_solution = conference_data.get(
             'entryPoints', [{}])[0].get('uri')
-        return {"message": "Event created: %s \n Video conference link: %s" % (event.get('htmlLink'), conference_solution)}
+        return {"message": f"Событие создано:  {event.get('htmlLink')}", "video": conference_solution}
     except HttpError as error:
-        return {"message": "An error occurred: %s" % error}
+        return {"message": "Произошла ошибка: %s" % error}
 
 
-@app.get('/api/parser/{kadastr_number}')
+@ app.get('/api/parser/{kadastr_number}')
 async def get_data_kadastr(kadastr_number: str):
     try:
         get_info(kadastr_number)

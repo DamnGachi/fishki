@@ -2,16 +2,5 @@
     "title": "My Event",
     "description": "This is a test event",
     "start_time": "2023-08-28T09:00:00-07:00",
-    "end_time": "2023-08-28T17:00:00-07:00",
-    "conferenceData": {
-        ""
-        "conferenceSolution": "hangoutsMeet",
-        "conferenceName": "My Conference",
-        "conferenceEntryPoints": [
-            {
-                "entryPointType": "video",
-                "uri": "https://meet.google.com/abc-def-ghi"
-            }
-        ]
-    }
+    "end_time": "2023-08-28T17:00:00-07:00"
 }
