@@ -14,6 +14,39 @@ interface IProps {
   setRegistryItems: Dispatch<SetStateAction<any[]>>;
 }
 
+const logs = [
+  {
+    id: 1,
+    action: "Добавление фото",
+    date: "23 февраля, 13:45",
+    workingGroup: "Дружков Олег Юрьевич",
+  },
+  {
+    id: 2,
+    action: "Изменение анкеты",
+    date: "23 февраля, 13:45",
+    workingGroup: "Дружков Олег Юрьевич",
+  },
+  {
+    id: 3,
+    action: "Добавление документа",
+    date: "23 февраля, 13:45",
+    workingGroup: "Дружков Олег Юрьевич",
+  },
+  {
+    id: 4,
+    action: "Добавление фото",
+    date: "23 февраля, 13:45",
+    workingGroup: "Дружков Олег Юрьевич",
+  },
+  {
+    id: 5,
+    action: "Добавление фото",
+    date: "23 февраля, 13:45",
+    workingGroup: "Дружков Олег Юрьевич",
+  },
+];
+
 const DetailItem: FC<{ label: string; value: string }> = ({ label, value }) => {
   return (
     <div>
@@ -61,7 +94,6 @@ export const RegistryDetailModal: FC<IProps> = ({
           >
             Скрыть страницу объекта
           </Button>
-
           <div
             style={{
               display: "flex",
@@ -92,7 +124,6 @@ export const RegistryDetailModal: FC<IProps> = ({
               setRegistryItems={setRegistryItems}
             />
           </div>
-
           <Menu
             mode="horizontal"
             defaultSelectedKeys={["main"]}
@@ -115,7 +146,6 @@ export const RegistryDetailModal: FC<IProps> = ({
               },
             ]}
           />
-
           {activeTab === "main" && (
             <div>
               <p>{activeItemData.updatedAt}</p>
@@ -233,6 +263,34 @@ export const RegistryDetailModal: FC<IProps> = ({
                   </YMaps>
                 </>
               ) : null}
+            </div>
+          )}
+          {activeTab === "logs" && (
+            <div>
+              <h3>Лог событий по объекту</h3>
+              {activeItemData.history.length ? (
+                <>
+                  <p>Всего событий: {activeItemData.history.length}</p>
+                  <table>
+                    <tbody>
+                      <tr className="header">
+                        <td>Действие</td>
+                        <td>Дата добавления</td>
+                        <td>Рабочая группа</td>
+                      </tr>
+                      {activeItemData.history.map((item: any) => (
+                        <tr key={item.id}>
+                          <td>{item.action}</td>
+                          <td>{formatDate(item.createdAt)}</td>
+                          <td>{item.userId}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </>
+              ) : (
+                <p>Истории событий нет</p>
+              )}
             </div>
           )}
         </div>
