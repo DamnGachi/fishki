@@ -21,6 +21,7 @@ import axios from "axios";
 interface IProps {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
+  setRegistryItems: Dispatch<SetStateAction<any[]>>;
 }
 
 const regionOptions = [
@@ -46,16 +47,49 @@ const regionOptions = [
   },
 ];
 
-export const ObjectRequestPopup: FC<IProps> = ({ isOpen, setIsOpen }) => {
+export const NewObjectPopup: FC<IProps> = ({
+  isOpen,
+  setIsOpen,
+  setRegistryItems,
+}) => {
   const [popupForm] = useForm();
 
-  const handleFormSubmit = (values: any) => {
-    console.log(values);
+  const handleFormSubmit = async (values: any) => {
+    try {
+      const createRequest = await axios.put(
+        "http://127.0.0.1:8090/api/service/registry/create/",
+        { ...values }
+      );
+
+      if (createRequest.status === 200) {
+        setIsOpen(false);
+        message.success("Объект добавлен");
+        popupForm.resetFields();
+
+        (async () => {
+          try {
+            const contentRequest = await axios.get(
+              "http://127.0.0.1:8090/api/service/registry/"
+            );
+
+            if (contentRequest.status === 200) {
+              setRegistryItems(contentRequest.data);
+            } else {
+              message.error("Ошибка при загрузке элементов");
+            }
+          } catch {
+            message.error("Ошибка при загрузке элементов");
+          }
+        })();
+      }
+    } catch {
+      message.error("Произошла ошибка при добавлении элемента");
+    }
   };
 
   return (
     <Drawer
-      title="Запрос на внесение в реестр"
+      title="Добавление объекта"
       open={isOpen}
       placement="top"
       onClose={() => setIsOpen(false)}
@@ -63,10 +97,7 @@ export const ObjectRequestPopup: FC<IProps> = ({ isOpen, setIsOpen }) => {
       height={"100vh"}
       extra
     >
-      <h1>Формирование запроса</h1>
-
       <Form form={popupForm} onFinish={handleFormSubmit}>
-        <Divider />
         <h3>
           Данные об объекте (введите кадастровый номер для автозаполнения)
         </h3>
@@ -78,7 +109,7 @@ export const ObjectRequestPopup: FC<IProps> = ({ isOpen, setIsOpen }) => {
           <Form.Item
             label="Кадастровый номер"
             className="column-label-input"
-            name="number"
+            name="cadastralNumber"
             rules={[
               { required: true, message: "Поле обязательно" },
               { min: 18, message: "Некорректное количество символов" },
@@ -103,14 +134,24 @@ export const ObjectRequestPopup: FC<IProps> = ({ isOpen, setIsOpen }) => {
                         popupForm.setFieldsValue({
                           region: autoCompleteRequest.data["Регион:"],
                           type: autoCompleteRequest.data["Тип:"],
-                          full_address: `${autoCompleteRequest.data["Регион:"]}, ${autoCompleteRequest.data["Адрес:"]}`,
-                          square: parseInt(
-                            autoCompleteRequest.data[" Общая площадь: "]
-                          ),
+                          address: `${autoCompleteRequest.data["Регион:"]}, ${autoCompleteRequest.data["Адрес:"]}`,
                         });
 
                         message.success("Автозаполнение данных завершено");
 
+                        if (
+                          !isNaN(
+                            parseInt(
+                              autoCompleteRequest.data[" Общая площадь: "]
+                            )
+                          )
+                        ) {
+                          popupForm.setFieldsValue({
+                            space: parseInt(
+                              autoCompleteRequest.data[" Общая площадь: "]
+                            ),
+                          });
+                        }
                         if (autoCompleteRequest.data["Этаж:"]) {
                           popupForm.setFieldsValue({
                             floor: autoCompleteRequest.data["Этаж:"],
@@ -139,7 +180,7 @@ export const ObjectRequestPopup: FC<IProps> = ({ isOpen, setIsOpen }) => {
           <Form.Item
             label="Полный адрес"
             className="column-label-input"
-            name="full_address"
+            name="address"
             rules={[{ required: true, message: "Поле обязательно" }]}
             style={{ gridArea: "c" }}
           >
@@ -148,7 +189,7 @@ export const ObjectRequestPopup: FC<IProps> = ({ isOpen, setIsOpen }) => {
           <Form.Item
             label="Кадастровый район"
             className="column-label-input"
-            name="cadaster_address"
+            name="cadastralDoc"
             rules={[{ required: true, message: "Поле обязательно" }]}
             style={{ gridArea: "d" }}
           >
@@ -181,7 +222,7 @@ export const ObjectRequestPopup: FC<IProps> = ({ isOpen, setIsOpen }) => {
           <Form.Item
             label="Адрес по документам"
             className="column-label-input"
-            name="document_address"
+            name="addressDoc"
             rules={[{ required: true, message: "Поле обязательно" }]}
             style={{ gridArea: "f" }}
           >
@@ -199,7 +240,7 @@ export const ObjectRequestPopup: FC<IProps> = ({ isOpen, setIsOpen }) => {
           <Form.Item
             label="Площадь (м2)"
             className="column-label-input"
-            name="square"
+            name="space"
             rules={[{ required: true, message: "Поле обязательно" }]}
             style={{ gridArea: "h" }}
           >
@@ -267,7 +308,7 @@ export const ObjectRequestPopup: FC<IProps> = ({ isOpen, setIsOpen }) => {
         <h3>Данные о владельцах</h3>
 
         <div>
-          <Form.List name="owners">
+          <Form.List name="Owners">
             {(fields, { add, remove }) => (
               <>
                 {fields.map(({ key, name, ...restField }) => (
@@ -345,7 +386,7 @@ export const ObjectRequestPopup: FC<IProps> = ({ isOpen, setIsOpen }) => {
           </Button>
           <Form.Item>
             <Button type="primary" htmlType="submit">
-              Отправить заявку
+              Подтвердить
             </Button>
           </Form.Item>
         </div>

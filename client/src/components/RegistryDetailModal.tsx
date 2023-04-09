@@ -3,12 +3,15 @@ import { Map, YMaps, Placemark } from "@pbe/react-yandex-maps";
 import { Button, Divider, Menu } from "antd";
 import classNames from "classnames";
 import { Dispatch, FC, SetStateAction, useState } from "react";
+import { formatDate } from "./Registry";
+import { EditObjectPopup } from "./EditObjectPopup";
 
 interface IProps {
   activeDetailItem: any;
   activeItemData: any;
   setActiveDetailItem: Dispatch<SetStateAction<any>>;
   setActiveItemData: Dispatch<SetStateAction<any>>;
+  setRegistryItems: Dispatch<SetStateAction<any[]>>;
 }
 
 const DetailItem: FC<{ label: string; value: string }> = ({ label, value }) => {
@@ -25,8 +28,10 @@ export const RegistryDetailModal: FC<IProps> = ({
   activeItemData,
   setActiveDetailItem,
   setActiveItemData,
+  setRegistryItems,
 }) => {
   const [activeTab, setActiveTab] = useState("main");
+  const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
 
   return (
     <div
@@ -74,9 +79,18 @@ export const RegistryDetailModal: FC<IProps> = ({
             >
               {activeItemData.address}
             </h1>
-            <Button disabled style={{ marginLeft: 30 }}>
+            <Button
+              style={{ marginLeft: 30 }}
+              onClick={() => setIsEditPopupOpen(true)}
+            >
               Редактировать карточку объекта
             </Button>
+            <EditObjectPopup
+              isOpen={isEditPopupOpen}
+              setIsOpen={setIsEditPopupOpen}
+              itemData={activeItemData}
+              setRegistryItems={setRegistryItems}
+            />
           </div>
 
           <Menu
@@ -167,23 +181,23 @@ export const RegistryDetailModal: FC<IProps> = ({
               <h3>Информация о владельцах</h3>
 
               <div>
-                {activeItemData.owners && activeItemData.owners.length ? (
+                {activeItemData.Owners && activeItemData.Owners.length ? (
                   <div
                     style={{
                       display: "grid",
                       gridTemplateColumns: "1fr 1fr",
                     }}
                   >
-                    {activeItemData.owners.map((owner: any) => (
+                    {activeItemData.Owners.map((owner: any) => (
                       <>
                         <DetailItem value={owner.fio} label="ФИО Владельца" />
-                        <DetailItem value={owner.rule} label="ФЗ" />
+                        <DetailItem value={owner.fs.title} label="ФЗ" />
                         <DetailItem
-                          value={owner.registration_number}
+                          value={owner.registrationCertificate}
                           label="Свидетельство о регистрации"
                         />
                         <DetailItem
-                          value={owner.registration_date}
+                          value={formatDate(owner.regDate)}
                           label="Дата регистрации"
                         />
                       </>

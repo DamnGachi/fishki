@@ -12,15 +12,18 @@ import {
   message,
 } from "antd";
 import { useForm } from "antd/es/form/Form";
-import { Dispatch, FC, SetStateAction } from "react";
+import { Dispatch, FC, SetStateAction, useEffect } from "react";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import "dayjs/locale/ru";
 import ruRU from "antd/es/date-picker/locale/ru_RU";
 import axios from "axios";
+import appState from "../store/appState";
 
 interface IProps {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
+  setRegistryItems: Dispatch<SetStateAction<any[]>>;
+  itemData: any;
 }
 
 const regionOptions = [
@@ -46,16 +49,62 @@ const regionOptions = [
   },
 ];
 
-export const ObjectRequestPopup: FC<IProps> = ({ isOpen, setIsOpen }) => {
+export const EditObjectPopup: FC<IProps> = ({
+  isOpen,
+  setIsOpen,
+  setRegistryItems,
+  itemData,
+}) => {
   const [popupForm] = useForm();
 
-  const handleFormSubmit = (values: any) => {
-    console.log(values);
+  useEffect(() => {
+    popupForm.resetFields();
+  }, [itemData, popupForm]);
+
+  const handleFormSubmit = async (values: any) => {
+    try {
+      const updateRequest = await axios.post(
+        `http://127.0.0.1:8090/api/service/registry/${itemData.id}/update/`,
+        {
+          ...values,
+          id: itemData.id,
+          userId: appState.userId,
+          Owners: values.Owners.map((owner: any) => ({
+            ...owner,
+            id: owner.id ? owner.id : null,
+          })),
+        }
+      );
+
+      if (updateRequest.status === 200) {
+        setIsOpen(false);
+        message.success("Объект изменен");
+        popupForm.resetFields();
+
+        (async () => {
+          try {
+            const contentRequest = await axios.get(
+              "http://127.0.0.1:8090/api/service/registry/"
+            );
+
+            if (contentRequest.status === 200) {
+              setRegistryItems(contentRequest.data);
+            } else {
+              message.error("Ошибка при загрузке элементов");
+            }
+          } catch {
+            message.error("Ошибка при загрузке элементов");
+          }
+        })();
+      }
+    } catch {
+      message.error("Произошла ошибка при обновлении элемента");
+    }
   };
 
   return (
     <Drawer
-      title="Запрос на внесение в реестр"
+      title="Редактирование объекта"
       open={isOpen}
       placement="top"
       onClose={() => setIsOpen(false)}
@@ -63,13 +112,12 @@ export const ObjectRequestPopup: FC<IProps> = ({ isOpen, setIsOpen }) => {
       height={"100vh"}
       extra
     >
-      <h1>Формирование запроса</h1>
-
-      <Form form={popupForm} onFinish={handleFormSubmit}>
-        <Divider />
-        <h3>
-          Данные об объекте (введите кадастровый номер для автозаполнения)
-        </h3>
+      <Form
+        form={popupForm}
+        onFinish={handleFormSubmit}
+        initialValues={{ ...itemData }}
+      >
+        <h3>Данные об объекте</h3>
 
         <div
           className="object-request-popup-form-grid"
@@ -78,7 +126,7 @@ export const ObjectRequestPopup: FC<IProps> = ({ isOpen, setIsOpen }) => {
           <Form.Item
             label="Кадастровый номер"
             className="column-label-input"
-            name="number"
+            name="cadastralNumber"
             rules={[
               { required: true, message: "Поле обязательно" },
               { min: 18, message: "Некорректное количество символов" },
@@ -86,46 +134,7 @@ export const ObjectRequestPopup: FC<IProps> = ({ isOpen, setIsOpen }) => {
             ]}
             style={{ gridArea: "a" }}
           >
-            <Input
-              onChange={(e) => {
-                if (e.target.value.length === 18) {
-                  (async () => {
-                    try {
-                      message.info(
-                        "Автозаполнение по кадастровому номеру началось"
-                      );
-
-                      const autoCompleteRequest = await axios.get(
-                        `http://127.0.0.1:8000/api/parser/${e.target.value}`
-                      );
-
-                      if (autoCompleteRequest.status === 200) {
-                        popupForm.setFieldsValue({
-                          region: autoCompleteRequest.data["Регион:"],
-                          type: autoCompleteRequest.data["Тип:"],
-                          full_address: `${autoCompleteRequest.data["Регион:"]}, ${autoCompleteRequest.data["Адрес:"]}`,
-                          square: parseInt(
-                            autoCompleteRequest.data[" Общая площадь: "]
-                          ),
-                        });
-
-                        message.success("Автозаполнение данных завершено");
-
-                        if (autoCompleteRequest.data["Этаж:"]) {
-                          popupForm.setFieldsValue({
-                            floor: autoCompleteRequest.data["Этаж:"],
-                          });
-                        }
-                      } else {
-                        message.error("Ошибка при автозаполнении");
-                      }
-                    } catch {
-                      message.error("Ошибка при автозаполнении");
-                    }
-                  })();
-                }
-              }}
-            />
+            <Input />
           </Form.Item>
           <Form.Item
             label="Регион"
@@ -139,7 +148,7 @@ export const ObjectRequestPopup: FC<IProps> = ({ isOpen, setIsOpen }) => {
           <Form.Item
             label="Полный адрес"
             className="column-label-input"
-            name="full_address"
+            name="address"
             rules={[{ required: true, message: "Поле обязательно" }]}
             style={{ gridArea: "c" }}
           >
@@ -148,7 +157,7 @@ export const ObjectRequestPopup: FC<IProps> = ({ isOpen, setIsOpen }) => {
           <Form.Item
             label="Кадастровый район"
             className="column-label-input"
-            name="cadaster_address"
+            name="cadastralDoc"
             rules={[{ required: true, message: "Поле обязательно" }]}
             style={{ gridArea: "d" }}
           >
@@ -181,7 +190,7 @@ export const ObjectRequestPopup: FC<IProps> = ({ isOpen, setIsOpen }) => {
           <Form.Item
             label="Адрес по документам"
             className="column-label-input"
-            name="document_address"
+            name="addressDoc"
             rules={[{ required: true, message: "Поле обязательно" }]}
             style={{ gridArea: "f" }}
           >
@@ -199,7 +208,7 @@ export const ObjectRequestPopup: FC<IProps> = ({ isOpen, setIsOpen }) => {
           <Form.Item
             label="Площадь (м2)"
             className="column-label-input"
-            name="square"
+            name="space"
             rules={[{ required: true, message: "Поле обязательно" }]}
             style={{ gridArea: "h" }}
           >
@@ -267,7 +276,7 @@ export const ObjectRequestPopup: FC<IProps> = ({ isOpen, setIsOpen }) => {
         <h3>Данные о владельцах</h3>
 
         <div>
-          <Form.List name="owners">
+          <Form.List name="Owners">
             {(fields, { add, remove }) => (
               <>
                 {fields.map(({ key, name, ...restField }) => (
@@ -293,7 +302,7 @@ export const ObjectRequestPopup: FC<IProps> = ({ isOpen, setIsOpen }) => {
                       {...restField}
                       className="column-label-input"
                       label="Федеральный закон"
-                      name={[name, "rule"]}
+                      name={[name, "fsId"]}
                       rules={[{ required: true, message: "Поле обязательно" }]}
                     >
                       <Input />
@@ -302,7 +311,7 @@ export const ObjectRequestPopup: FC<IProps> = ({ isOpen, setIsOpen }) => {
                       {...restField}
                       className="column-label-input"
                       label="Номер свидетельства о регистрации"
-                      name={[name, "registration_number"]}
+                      name={[name, "registrationCertificate"]}
                       rules={[{ required: true, message: "Поле обязательно" }]}
                     >
                       <Input />
@@ -345,7 +354,7 @@ export const ObjectRequestPopup: FC<IProps> = ({ isOpen, setIsOpen }) => {
           </Button>
           <Form.Item>
             <Button type="primary" htmlType="submit">
-              Отправить заявку
+              Подтвердить
             </Button>
           </Form.Item>
         </div>

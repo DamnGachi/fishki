@@ -3,121 +3,23 @@ import classNames from "classnames";
 import { FC, useEffect, useState } from "react";
 import { RegistryDetailModal } from "./RegistryDetailModal";
 import axios from "axios";
+import { NewObjectPopup } from "./NewObjectPopup";
 
 export const formatDate = (dateString: string) => {
   const dateObj = new Date(dateString);
 
-  return `${dateObj.getDate()}.${
-    dateObj.getMonth() + 1
-  }.${dateObj.getFullYear()}`;
+  return `${dateObj.getDate()}.${`${dateObj.getMonth() + 1}`.padStart(
+    2,
+    "0"
+  )}.${`${dateObj.getFullYear()}`.padStart(2, "0")}`;
 };
-
-const tableItems = [
-  {
-    key: 1,
-    number: "77:01:0001014:1870",
-    address: "ул. Конная, д. 5/3, 1",
-    type: "Помещение",
-    square: "134,6",
-    registrationDate: "12.03.2014",
-    region: "Москва",
-    index: "109012",
-    floor: "0 (Цокольный этаж)",
-    status: "Новый",
-    updatedAt: "Обновлена 24 февраля, 13:45",
-    owners: [],
-  },
-  {
-    key: 2,
-    number: "77:01:0001014:1870",
-    address: "ул. Конная, д. 5/3, 1",
-    type: "Помещение",
-    square: "134,6",
-    floor: "0 (Цокольный этаж)",
-    registrationDate: "12.03.2014",
-    region: "Москва",
-    index: "109012",
-    status: "В работе",
-    updatedAt: "Обновлена 24 февраля, 13:45",
-    owners: [
-      {
-        fio: "Бондарь Евгений Максимович",
-        rule: "218",
-        registration_number: "№ 34-11-237/2008-411.3",
-        registration_date: "20.11.2001",
-      },
-    ],
-  },
-  {
-    key: 3,
-    number: "77:01:0001014:1870",
-    address: "ул. Конная, д. 5/3, 1",
-    type: "Помещение",
-    square: "134,6",
-    registrationDate: "12.03.2014",
-    region: "Москва",
-    floor: "0 (Цокольный этаж)",
-    status: "Работа завершена",
-    index: "109012",
-    updatedAt: "Обновлена 24 февраля, 13:45",
-    owners: [
-      {
-        fio: "Бондарь Евгений Максимович",
-        rule: "218",
-        registration_number: "№ 34-11-237/2008-411.3",
-        registration_date: "20.11.2001",
-      },
-    ],
-  },
-  {
-    key: 4,
-    number: "77:01:0001014:1870",
-    address: "ул. Конная, д. 5/3, 1",
-    type: "Помещение",
-    square: "134,6",
-    registrationDate: "12.03.2014",
-    status: "Новый",
-    region: "Москва",
-    updatedAt: "Обновлена 24 февраля, 13:45",
-    floor: "0 (Цокольный этаж)",
-    index: "109012",
-    owners: [
-      {
-        fio: "Бондарь Евгений Максимович",
-        rule: "218",
-        registration_number: "№ 34-11-237/2008-411.3",
-        registration_date: "20.11.2001",
-      },
-    ],
-  },
-  {
-    key: 5,
-    number: "77:01:0001014:1870",
-    address: "ул. Конная, д. 5/3, 1",
-    floor: "0 (Цокольный этаж)",
-    type: "Помещение",
-    square: "134,6",
-    region: "Москва",
-    index: "109012",
-    registrationDate: "12.03.2014",
-    status: "Новый",
-    updatedAt: "Обновлена 24 февраля, 13:45",
-    owners: [
-      {
-        fio: "Бондарь Евгений Максимович",
-        rule: "218",
-        registration_number: "№ 34-11-237/2008-411.3",
-        registration_date: "20.11.2001",
-      },
-    ],
-  },
-];
 
 export const Registry: FC = () => {
   const [filtersForm] = Form.useForm();
   const [activeDetailItem, setActiveDetailItem] = useState<null | number>(null);
   const [activeItemData, setActiveItemData] = useState<null | any>(null);
   const [registryItems, setRegistryItems] = useState<any[]>([]);
+  const [isNewObjectPopupOpen, setIsNewObjectPopupOpen] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -152,6 +54,9 @@ export const Registry: FC = () => {
         <div
           style={{
             position: "fixed",
+            top: 0,
+            zIndex: 1,
+            background: "rgb(244, 244, 244)",
             width:
               activeDetailItem !== null
                 ? "calc(50vw - 210px)"
@@ -159,8 +64,35 @@ export const Registry: FC = () => {
             transition: "0.4s",
           }}
         >
-          <h5>Обновлено: 13 февраля</h5>
-          <h2>Реестр объектов</h2>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <div>
+              <h5>Обновлено: 13 февраля</h5>
+              <h2>Реестр объектов</h2>
+            </div>
+            <div style={{ display: "flex", gap: 10 }}>
+              <Button
+                onClick={() => {
+                  setIsNewObjectPopupOpen(true);
+                }}
+              >
+                Добавить объект
+              </Button>
+              <NewObjectPopup
+                isOpen={isNewObjectPopupOpen}
+                setIsOpen={setIsNewObjectPopupOpen}
+                setRegistryItems={setRegistryItems}
+              />
+              <Button type="primary" disabled>
+                Создать повестку
+              </Button>
+            </div>
+          </div>
           <Form form={filtersForm} style={{ display: "flex", gap: 10 }}>
             <Form.Item name="q">
               <Input placeholder="Начните поиск" style={{ width: 400 }} />
@@ -246,6 +178,7 @@ export const Registry: FC = () => {
             activeItemData={activeItemData}
             setActiveDetailItem={setActiveDetailItem}
             setActiveItemData={setActiveItemData}
+            setRegistryItems={setRegistryItems}
           />
         </div>
       </div>
