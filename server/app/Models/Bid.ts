@@ -1,5 +1,6 @@
 import { DataTypes } from "sequelize";
 import Owners from "./Owner";
+import BidOwner from "./BidOwner";
 const { sequelize } = require('../../database/database');
 
 const Bid = sequelize.define('Bid', {
@@ -58,6 +59,6 @@ const Bid = sequelize.define('Bid', {
     tableName: 'Bid',
 });
 
-Bid.hasMany(Owners);
+Bid.hasMany(BidOwner);
 
 export default Bid;

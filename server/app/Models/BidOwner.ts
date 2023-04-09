@@ -2,8 +2,8 @@ import { DataTypes } from "sequelize";
 import User from "./User";
 const { sequelize } = require('../../database/database');
 
-const BidOwner = sequelize.define('OwnerBid', {
-    id: {
+const BidOwner = sequelize.define('BidOwner', {
+    userId: {
         type: DataTypes.INTEGER
     },
     fio: {
