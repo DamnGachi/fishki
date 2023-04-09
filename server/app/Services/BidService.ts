@@ -32,7 +32,7 @@ class BidService {
             const BidId = await BidNew.get('id');
 
             if (BidId && Owners.owners.length) {
-                const addBidId = owner => {
+                const addBidId = (owner: any) => {
                     owner.BidId = BidId;
                     return owner;
                 };
@@ -58,7 +58,7 @@ class BidService {
                 return item;
             });
             if (newOwners.length) {
-                const addBidId = owner => {
+                const addBidId = (owner :any) => {
                     owner.BidId = index;
                     return owner;
                 };
