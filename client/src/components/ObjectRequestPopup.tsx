@@ -81,14 +81,17 @@ export const ObjectRequestPopup: FC<IProps> = ({ isOpen, setIsOpen }) => {
             name="number"
             rules={[
               { required: true, message: "Поле обязательно" },
-              { min: 18, message: "Некорректное количество символов" },
+              { min: 17, message: "Некорректное количество символов" },
               { max: 18, message: "Некорректное количество символов" },
             ]}
             style={{ gridArea: "a" }}
           >
             <Input
               onChange={(e) => {
-                if (e.target.value.length === 18) {
+                if (
+                  e.target.value.length === 18 ||
+                  e.target.value.length === 17
+                ) {
                   (async () => {
                     try {
                       message.info(
@@ -244,7 +247,6 @@ export const ObjectRequestPopup: FC<IProps> = ({ isOpen, setIsOpen }) => {
             label="Категория земель"
             className="column-label-input"
             name="category"
-            rules={[{ required: true, message: "Поле обязательно" }]}
             style={{ gridArea: "j" }}
           >
             <Select

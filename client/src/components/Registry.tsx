@@ -4,6 +4,7 @@ import { FC, useEffect, useState } from "react";
 import { RegistryDetailModal } from "./RegistryDetailModal";
 import axios from "axios";
 import { NewObjectPopup } from "./NewObjectPopup";
+import appState from "../store/appState";
 
 export const formatDate = (dateString: string) => {
   const dateObj = new Date(dateString);
@@ -13,6 +14,18 @@ export const formatDate = (dateString: string) => {
     "0"
   )}.${`${dateObj.getFullYear()}`.padStart(2, "0")}`;
 };
+
+export function formatDateWithTime(date: string) {
+  const dateObj = new Date(date);
+
+  const day = dateObj.getDate().toString().padStart(2, "0");
+  const month = (dateObj.getMonth() + 1).toString().padStart(2, "0");
+  const year = dateObj.getFullYear();
+  const hours = dateObj.getHours().toString().padStart(2, "0");
+  const minutes = dateObj.getMinutes().toString().padStart(2, "0");
+
+  return `${day}.${month}.${year} ${hours}:${minutes}`;
+}
 
 export const Registry: FC = () => {
   const [filtersForm] = Form.useForm();
@@ -72,25 +85,29 @@ export const Registry: FC = () => {
             }}
           >
             <div>
-              <h5>Обновлено: 13 февраля</h5>
+              <h5>Обновлено: 9 апреля</h5>
               <h2>Реестр объектов</h2>
             </div>
             <div style={{ display: "flex", gap: 10 }}>
-              <Button
-                onClick={() => {
-                  setIsNewObjectPopupOpen(true);
-                }}
-              >
-                Добавить объект
-              </Button>
-              <NewObjectPopup
-                isOpen={isNewObjectPopupOpen}
-                setIsOpen={setIsNewObjectPopupOpen}
-                setRegistryItems={setRegistryItems}
-              />
-              <Button type="primary" disabled>
-                Создать повестку
-              </Button>
+              {appState.checkIsAdmin() && (
+                <>
+                  <Button
+                    onClick={() => {
+                      setIsNewObjectPopupOpen(true);
+                    }}
+                  >
+                    Добавить объект
+                  </Button>
+                  <NewObjectPopup
+                    isOpen={isNewObjectPopupOpen}
+                    setIsOpen={setIsNewObjectPopupOpen}
+                    setRegistryItems={setRegistryItems}
+                  />
+                  <Button type="primary" disabled>
+                    Создать повестку
+                  </Button>
+                </>
+              )}
             </div>
           </div>
           <Form form={filtersForm} style={{ display: "flex", gap: 10 }}>

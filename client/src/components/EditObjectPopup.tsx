@@ -24,6 +24,8 @@ interface IProps {
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   setRegistryItems: Dispatch<SetStateAction<any[]>>;
   itemData: any;
+  setActiveItemData: any;
+  setActiveDetailItem: any;
 }
 
 const regionOptions = [
@@ -54,6 +56,8 @@ export const EditObjectPopup: FC<IProps> = ({
   setIsOpen,
   setRegistryItems,
   itemData,
+  setActiveDetailItem,
+  setActiveItemData,
 }) => {
   const [popupForm] = useForm();
 
@@ -80,6 +84,9 @@ export const EditObjectPopup: FC<IProps> = ({
         setIsOpen(false);
         message.success("Объект изменен");
         popupForm.resetFields();
+
+        setActiveDetailItem(null);
+        setActiveItemData(null);
 
         (async () => {
           try {
@@ -129,7 +136,7 @@ export const EditObjectPopup: FC<IProps> = ({
             name="cadastralNumber"
             rules={[
               { required: true, message: "Поле обязательно" },
-              { min: 18, message: "Некорректное количество символов" },
+              { min: 17, message: "Некорректное количество символов" },
               { max: 18, message: "Некорректное количество символов" },
             ]}
             style={{ gridArea: "a" }}
@@ -199,7 +206,7 @@ export const EditObjectPopup: FC<IProps> = ({
           <Form.Item
             label="Почтовый индекс"
             className="column-label-input"
-            name="index"
+            name="indexMail"
             rules={[{ required: true, message: "Поле обязательно" }]}
             style={{ gridArea: "g" }}
           >
@@ -253,7 +260,6 @@ export const EditObjectPopup: FC<IProps> = ({
             label="Категория земель"
             className="column-label-input"
             name="category"
-            rules={[{ required: true, message: "Поле обязательно" }]}
             style={{ gridArea: "j" }}
           >
             <Select

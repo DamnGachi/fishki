@@ -56,9 +56,24 @@ export const NewObjectPopup: FC<IProps> = ({
 
   const handleFormSubmit = async (values: any) => {
     try {
+      let lat, long;
+
+      try {
+        const coordsRequest = await axios.get(
+          `http://api.positionstack.com/v1/forward?access_key=2cd034eb922b8727076c6eb8b27d3742&query=${values.address}/`
+        );
+
+        if (coordsRequest.status === 200) {
+          lat = coordsRequest.data.data[0].latitude;
+          long = coordsRequest.data.data[0].longitude;
+        }
+      } catch {
+        message.error("Данные координат не получены");
+      }
+
       const createRequest = await axios.put(
         "http://127.0.0.1:8090/api/service/registry/create/",
-        { ...values }
+        { ...values, lat, long, Owners: values?.Owners ?? [] }
       );
 
       if (createRequest.status === 200) {
@@ -112,14 +127,17 @@ export const NewObjectPopup: FC<IProps> = ({
             name="cadastralNumber"
             rules={[
               { required: true, message: "Поле обязательно" },
-              { min: 18, message: "Некорректное количество символов" },
+              { min: 17, message: "Некорректное количество символов" },
               { max: 18, message: "Некорректное количество символов" },
             ]}
             style={{ gridArea: "a" }}
           >
             <Input
               onChange={(e) => {
-                if (e.target.value.length === 18) {
+                if (
+                  e.target.value.length === 18 ||
+                  e.target.value.length === 17
+                ) {
                   (async () => {
                     try {
                       message.info(
@@ -231,7 +249,7 @@ export const NewObjectPopup: FC<IProps> = ({
           <Form.Item
             label="Почтовый индекс"
             className="column-label-input"
-            name="index"
+            name="indexMail"
             rules={[{ required: true, message: "Поле обязательно" }]}
             style={{ gridArea: "g" }}
           >
@@ -285,7 +303,6 @@ export const NewObjectPopup: FC<IProps> = ({
             label="Категория земель"
             className="column-label-input"
             name="category"
-            rules={[{ required: true, message: "Поле обязательно" }]}
             style={{ gridArea: "j" }}
           >
             <Select

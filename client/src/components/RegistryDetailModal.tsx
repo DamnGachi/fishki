@@ -2,9 +2,10 @@ import { ArrowRightOutlined } from "@ant-design/icons";
 import { Map, YMaps, Placemark } from "@pbe/react-yandex-maps";
 import { Button, Divider, Menu } from "antd";
 import classNames from "classnames";
-import { Dispatch, FC, SetStateAction, useState } from "react";
-import { formatDate } from "./Registry";
+import { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
+import { formatDate, formatDateWithTime } from "./Registry";
 import { EditObjectPopup } from "./EditObjectPopup";
+import appState from "../store/appState";
 
 interface IProps {
   activeDetailItem: any;
@@ -111,18 +112,24 @@ export const RegistryDetailModal: FC<IProps> = ({
             >
               {activeItemData.address}
             </h1>
-            <Button
-              style={{ marginLeft: 30 }}
-              onClick={() => setIsEditPopupOpen(true)}
-            >
-              Редактировать карточку объекта
-            </Button>
-            <EditObjectPopup
-              isOpen={isEditPopupOpen}
-              setIsOpen={setIsEditPopupOpen}
-              itemData={activeItemData}
-              setRegistryItems={setRegistryItems}
-            />
+            {appState.checkIsAdmin() && (
+              <>
+                <Button
+                  style={{ marginLeft: 30 }}
+                  onClick={() => setIsEditPopupOpen(true)}
+                >
+                  Редактировать карточку объекта
+                </Button>
+                <EditObjectPopup
+                  isOpen={isEditPopupOpen}
+                  setIsOpen={setIsEditPopupOpen}
+                  itemData={activeItemData}
+                  setRegistryItems={setRegistryItems}
+                  setActiveDetailItem={setActiveDetailItem}
+                  setActiveItemData={setActiveItemData}
+                />
+              </>
+            )}
           </div>
           <Menu
             mode="horizontal"
@@ -276,12 +283,12 @@ export const RegistryDetailModal: FC<IProps> = ({
                       <tr className="header">
                         <td>Действие</td>
                         <td>Дата добавления</td>
-                        <td>Рабочая группа</td>
+                        <td>ID пользователя</td>
                       </tr>
                       {activeItemData.history.map((item: any) => (
                         <tr key={item.id}>
                           <td>{item.action}</td>
-                          <td>{formatDate(item.createdAt)}</td>
+                          <td>{formatDateWithTime(item.createdAt)}</td>
                           <td>{item.userId}</td>
                         </tr>
                       ))}
