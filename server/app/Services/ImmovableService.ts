@@ -31,7 +31,7 @@ class ImmovableService {
                 fs: fs,
             };
         } catch (error) {
-            return throw error;
+             throw error;
         }
     }
 
@@ -68,7 +68,10 @@ class ImmovableService {
             await this.logging(index,data.userId, ActionEnums.UPDATED_CARD);
             const Owners = new OwnersDto(data);
             const newOwners = Owners.owners.filter(owner => !owner.id);
-            const updatedOwners = Owners.owners.filter(owner => owner.id);
+            const updatedOwners = Owners.owners.filter(owner => owner.id).map(item => {
+                delete item.ImmovableId
+                return item;
+            });
             if (newOwners.length) {
                 const addImmovableId = owner => {
                     owner.immovableId = index;
