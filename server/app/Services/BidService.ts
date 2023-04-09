@@ -1,10 +1,10 @@
-import BidOwner from "../Models/BidOwner";
+import Owner from "../Models/Owner";
 import Fs from "../Models/Fs";
 import { BidDto } from "../Dto/BidDto";
 import { BidOwnerDto } from "../Dto/BidOwnerDto";
 import { ActionEnums } from "../Enums/ActionEnums";
 import Bid from "../Models/Bid";
-import Owner from "../Models/Owner";
+
 
 class BidService {
     async getAll() {
@@ -17,7 +17,7 @@ class BidService {
 
     async findOne(index: any) {
         try {
-            return await Bid.findAll({ where: { id: index }, include: [{ model: BidOwner, include: ['fs'], }, 'status'] },);
+            return await Bid.findAll({ where: { id: index }, include: [{ model: Owner, include: ['fs'], }, 'status'] },);
         } catch (error) {
             throw error;
         }
@@ -37,7 +37,7 @@ class BidService {
                     return owner;
                 };
                 const owners = Owners.owners.map(addBidId);
-                await BidOwner.bulkCreate(owners)
+                await Owner.bulkCreate(owners)
             }
             return await this.findOne(BidId);
         } catch (error) {

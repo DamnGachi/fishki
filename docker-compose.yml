@@ -50,6 +50,6 @@ services:
   parser:
     build:
       context: ./parser
-      dockerfile: Dockerfile
+      dockerfile: docker/Dockerfile
     ports:
       - "127.0.0.1:8000:8000"

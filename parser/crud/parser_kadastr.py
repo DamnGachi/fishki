@@ -42,10 +42,11 @@ def get_info(kadastr_number: str):
         item_info = item.find('td')
         result2.append(item_info.string)
 
-    dick = dict(zip(result2, result1))
-    with open("dick.json", 'w', encoding='utf-8') as fout:
-        json_dumps_str = json.dumps(dick, indent=4, ensure_ascii=False)
+    info_from_reestr = dict(zip(result2, result1))
+    with open("info_from_reestr.json", 'w', encoding='utf-8') as fout:
+        json_dumps_str = json.dumps(
+            info_from_reestr, indent=4, ensure_ascii=False)
         print(json_dumps_str, file=fout)
 
-    with open("dick.json", 'r', encoding='utf-8') as fout:
+    with open("info_from_reestr.json", 'r', encoding='utf-8') as fout:
         return fout.read()

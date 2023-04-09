@@ -26,3 +26,5 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+parser/__pycache__/run.cpython-310.pyc
+parser/__pycache__/parser_kadastr.cpython-310.pyc
