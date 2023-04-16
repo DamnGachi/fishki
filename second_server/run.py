@@ -1,14 +1,10 @@
-import datetime
-import json
-import uuid
 
-from datetime import timedelta
-from typing import Dict, List
-from fastapi import FastAPI, HTTPException, Request
+import json
+
+from fastapi import FastAPI, HTTPException
 from crud.parser_kadastr import get_info
 from crud.google_event import create_event_handler
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi import FastAPI
 
 
 app = FastAPI()
@@ -16,9 +12,9 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    allow_credentials=True,
 )
 
 
